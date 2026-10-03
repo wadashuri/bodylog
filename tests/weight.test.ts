@@ -108,16 +108,16 @@ test("日付の初期値は今日、表示は日本語の月日になる", () =>
   assert.match(today, /^\d{4}-\d{2}-\d{2}$/);
   assert.equal(localDate(dateObject(today)), today);
   assert.equal(recordingStreak(entriesFor([today])), 1);
-  assert.equal(periodEntries(entriesFor([today]), "30").length, 1);
+  assert.equal(periodEntries(entriesFor([today]), "31").length, 1);
   assert.match(prettyDate("2026-10-03"), /10月3日/);
 });
-test("30日の境界と欠測日を保ったまま抽出する", () => {
+test("31日の境界と欠測日を保ったまま抽出する", () => {
   const entries = ["2026-09-03", "2026-09-04", "2026-10-03", "2026-10-04"].map(
     (date, i) => ({ id: String(i), date, weightKg: 70, createdAt: 0 }),
   );
   assert.deepEqual(
-    periodEntries(entries, "30", "2026-10-03").map((e) => e.date),
-    ["2026-09-04", "2026-10-03"],
+    periodEntries(entries, "31", "2026-10-03").map((e) => e.date),
+    ["2026-09-03", "2026-09-04", "2026-10-03"],
   );
   assert.equal(periodEntries(entries, "all").length, 4);
 });

@@ -5,7 +5,7 @@ export type WeightEntry = {
   weightKg: number;
   createdAt: number;
 };
-export type Period = "30" | "90" | "all";
+export type Period = "7" | "31" | "90" | "all";
 export const LB_PER_KG = 2.2046226218;
 export function formatWeightDigits(digits: string): string {
   return digits ? (Number(digits) / 10).toFixed(1) : "";

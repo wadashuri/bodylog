@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Alert,
   Image,
@@ -70,6 +70,12 @@ function RecordForm({ initialDate }: { initialDate: string }) {
   // 表示単位の丸めで、入力を変えずに保存した値がずれないようにする。
   const preset = existing ?? last;
   const kg = replace && preset ? preset.weightKg : parseWeight(value, unit);
+  useEffect(() => {
+    if (kg === null && !!value)
+      void Haptics.notificationAsync(
+        Haptics.NotificationFeedbackType.Error,
+      ).catch(() => {});
+  }, [kg, value]);
   function key(input: string) {
     void Haptics.selectionAsync().catch(() => {});
     if (input === "C") {
@@ -272,11 +278,6 @@ function RecordForm({ initialDate }: { initialDate: string }) {
             ),
           )}
         </View>
-        {value && kg === null && (
-          <Text style={{ color: colors.danger, fontSize: 13 }}>
-            20〜350kg相当の体重を入力してください。
-          </Text>
-        )}
         <Pressable
           accessibilityRole="button"
           disabled={kg === null || busy}
