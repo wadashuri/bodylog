@@ -1,5 +1,6 @@
 import * as SQLite from "expo-sqlite";
 import type { WeightEntry } from "../features/weight/model";
+import type { PhotoEntry } from "../features/photo/model";
 let connection: Promise<SQLite.SQLiteDatabase> | undefined;
 async function initialize() {
   const db = await SQLite.openDatabaseAsync("bodylog.db");
@@ -8,7 +9,10 @@ async function initialize() {
       id TEXT PRIMARY KEY NOT NULL, date TEXT UNIQUE NOT NULL,
       weightKg REAL NOT NULL CHECK(weightKg >= 20 AND weightKg <= 350), createdAt INTEGER NOT NULL);
     CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY NOT NULL, value TEXT NOT NULL);
-    PRAGMA user_version = 1;`);
+    CREATE TABLE IF NOT EXISTS photos (
+      date TEXT PRIMARY KEY NOT NULL, fileName TEXT NOT NULL,
+      thumbName TEXT NOT NULL, createdAt INTEGER NOT NULL);
+    PRAGMA user_version = 2;`);
   return db;
 }
 function database() {
@@ -66,4 +70,27 @@ export async function setSetting(key: string, value: string): Promise<void> {
     key,
     value,
   );
+}
+export async function listPhotos(): Promise<PhotoEntry[]> {
+  return (await database()).getAllAsync<PhotoEntry>(
+    "SELECT * FROM photos ORDER BY date ASC",
+  );
+}
+export async function savePhotoRecord(
+  date: string,
+  fileName: string,
+  thumbName: string,
+): Promise<void> {
+  await (
+    await database()
+  ).runAsync(
+    "INSERT INTO photos(date, fileName, thumbName, createdAt) VALUES(?, ?, ?, ?) ON CONFLICT(date) DO UPDATE SET fileName = excluded.fileName, thumbName = excluded.thumbName, createdAt = excluded.createdAt",
+    date,
+    fileName,
+    thumbName,
+    Date.now(),
+  );
+}
+export async function deletePhotoRecord(date: string): Promise<void> {
+  await (await database()).runAsync("DELETE FROM photos WHERE date = ?", date);
 }

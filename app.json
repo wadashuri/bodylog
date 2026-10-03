@@ -23,7 +23,13 @@
       "expo-sqlite",
       "@react-native-community/datetimepicker",
       "expo-font",
-      "expo-sharing"
+      "expo-sharing",
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "体型の写真を撮影するためにカメラを使用します。"
+        }
+      ]
     ],
     "scheme": "bodylog",
     "platforms": ["ios"],

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   Alert,
+  Image,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -21,6 +22,9 @@ import {
   prettyDate,
   weightDigits,
 } from "../../features/weight/model";
+import { usePhotos } from "../../features/photo/PhotoProvider";
+import { photoForDate } from "../../features/photo/model";
+import { thumbUri } from "../../services/photoStorage";
 import { colors, styles } from "../../components/ui";
 function resolveDate(param?: string) {
   return param && /^\d{4}-\d{2}-\d{2}$/.test(param) ? param : localDate();
@@ -32,7 +36,24 @@ export default function RecordScreen() {
 }
 function RecordForm({ initialDate }: { initialDate: string }) {
   const { entries, unit, save, remove } = useWeights();
+  const { photos, capture } = usePhotos();
   const [date, setDate] = useState(initialDate);
+  const photo = photoForDate(photos, date);
+  const [photoBusy, setPhotoBusy] = useState(false);
+  async function handleCapture() {
+    if (photoBusy) return;
+    setPhotoBusy(true);
+    try {
+      await capture(date);
+    } catch {
+      Alert.alert(
+        "撮影できませんでした",
+        "カメラへのアクセスを許可してからもう一度お試しください。",
+      );
+    } finally {
+      setPhotoBusy(false);
+    }
+  }
   const existing = entries.find((e) => e.date === date);
   const last = entries[entries.length - 1];
   const [digits, setDigits] = useState(
@@ -129,13 +150,13 @@ function RecordForm({ initialDate }: { initialDate: string }) {
         )}
       </View>
       <ScrollView contentContainerStyle={[styles.content, { gap: 20 }]}>
-        <View style={styles.card}>
+        <View style={s.topCard}>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="記録日を変更"
             disabled={busy}
             onPress={() => setShowDate(!showDate)}
-            style={styles.row}
+            style={[styles.row, s.dateRow]}
           >
             <Text style={styles.text}>記録日</Text>
             <View
@@ -174,29 +195,54 @@ function RecordForm({ initialDate }: { initialDate: string }) {
               }}
             />
           )}
-        </View>
-        <View style={s.weightBox}>
-          <Text style={s.weightLabel}>体重</Text>
-          <View style={s.weight}>
-            <Text style={s.number}>{value || "0.00"}</Text>
-            <Text style={s.unit}>{unit}</Text>
+          <View style={s.weightBox}>
+            <Text style={s.weightLabel}>体重</Text>
+            <View style={s.weight}>
+              <Text style={s.number}>{value || "0.00"}</Text>
+              <Text style={s.unit}>{unit}</Text>
+            </View>
+            {!!value && (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="入力をクリア"
+                disabled={busy}
+                hitSlop={12}
+                onPress={() => key("C")}
+              >
+                <Ionicons
+                  name="close-circle-outline"
+                  size={22}
+                  color={colors.highlightText}
+                />
+              </Pressable>
+            )}
           </View>
-          {!!value && (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="入力をクリア"
-              disabled={busy}
-              hitSlop={12}
-              onPress={() => key("C")}
-            >
-              <Ionicons
-                name="close-circle-outline"
-                size={22}
-                color={colors.highlightText}
-              />
-            </Pressable>
-          )}
         </View>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={photo ? "写真を撮り直す" : "写真を撮る"}
+          disabled={photoBusy}
+          onPress={() => void handleCapture()}
+          style={[s.photoRow, { opacity: photoBusy ? 0.6 : 1 }]}
+        >
+          {photo ? (
+            <Image
+              source={{ uri: thumbUri(photo.thumbName) }}
+              style={s.photoThumb}
+            />
+          ) : (
+            <View style={[s.photoThumb, s.photoPlaceholder]}>
+              <Ionicons name="camera-outline" size={14} color={colors.muted} />
+            </View>
+          )}
+          <Text style={s.photoText}>
+            {photoBusy
+              ? "処理中…"
+              : photo
+                ? "写真を撮り直す"
+                : "写真を撮る（任意）"}
+          </Text>
+        </Pressable>
         <View style={s.keypad}>
           {["1", "2", "3", "4", "5", "6", "7", "8", "9", "C", "0", "back"].map(
             (k) => (
@@ -269,10 +315,32 @@ const s = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  topCard: {
+    backgroundColor: colors.card,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: colors.border,
+    overflow: "hidden",
+  },
+  dateRow: { paddingVertical: 16, paddingHorizontal: 20 },
+  photoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    alignSelf: "center",
+    paddingHorizontal: 2,
+    paddingVertical: 18,
+  },
+  photoThumb: { width: 24, height: 24, borderRadius: 7 },
+  photoPlaceholder: {
+    backgroundColor: colors.pale,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  photoText: { fontSize: 12, color: colors.muted },
   weightBox: {
     backgroundColor: colors.highlight,
-    borderRadius: 18,
-    paddingVertical: 20,
+    paddingVertical: 16,
     paddingHorizontal: 20,
     flexDirection: "row",
     alignItems: "center",
@@ -281,7 +349,7 @@ const s = StyleSheet.create({
   weightLabel: { fontSize: 15, fontWeight: "700", color: colors.highlightText },
   weight: { flexDirection: "row", alignItems: "baseline", gap: 8 },
   number: {
-    fontSize: 46,
+    fontSize: 40,
     fontWeight: "700",
     color: colors.highlightText,
     fontVariant: ["tabular-nums"],
@@ -294,7 +362,6 @@ const s = StyleSheet.create({
     gap: 8,
     width: "88%",
     alignSelf: "center",
-    marginTop: 52,
   },
   key: {
     width: "31%",
