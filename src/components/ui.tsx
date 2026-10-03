@@ -6,15 +6,19 @@ import {
   type StyleProp,
 } from "react-native";
 export const colors = {
-  bg: "#FAF8F5",
+  bg: "#F3E4C8",
   card: "#FFFFFF",
-  ink: "#2C3540",
-  muted: "#7B828B",
-  accent: "#F2AE68",
-  accentText: "#A65C24",
-  border: "#EAE5DF",
-  pale: "#FFF1E2",
+  ink: "#2C241A",
+  muted: "#93826A",
+  accent: "#EFA13C",
+  accentText: "#8A4A1E",
+  border: "#E3CFA6",
+  pale: "#FBEAC9",
   danger: "#B84E43",
+  header: "#5B4335",
+  headerText: "#FFFFFF",
+  highlight: "#F6D568",
+  highlightText: "#4A2E12",
 };
 export function Button({
   label,

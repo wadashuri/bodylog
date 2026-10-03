@@ -16,9 +16,7 @@ export default function Layout() {
               contentStyle: { backgroundColor: colors.bg },
             }}
           >
-            <Stack.Screen name="index" />
-            <Stack.Screen name="settings" />
-            <Stack.Screen name="record" options={{ presentation: "modal" }} />
+            <Stack.Screen name="(tabs)" />
           </Stack>
         </WeightProvider>
       </SafeAreaProvider>

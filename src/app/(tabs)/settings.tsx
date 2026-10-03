@@ -7,11 +7,10 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { colors, styles } from "../components/ui";
-import { useWeights } from "../features/weight/WeightProvider";
-import { APP_NAME, SITE_URL, SUPPORT_EMAIL } from "../constants/config";
+import { colors, styles } from "../../components/ui";
+import { useWeights } from "../../features/weight/WeightProvider";
+import { APP_NAME, SITE_URL, SUPPORT_EMAIL } from "../../constants/config";
 export default function Settings() {
   const { unit, changeUnit } = useWeights();
   async function open(url: string) {
@@ -27,18 +26,7 @@ export default function Settings() {
   return (
     <SafeAreaView style={styles.screen}>
       <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.row}>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="ホームに戻る"
-            hitSlop={14}
-            onPress={() => router.back()}
-          >
-            <Ionicons name="arrow-back" size={24} color={colors.ink} />
-          </Pressable>
-          <Text style={[styles.title, { fontSize: 22 }]}>設定</Text>
-          <View style={{ width: 24 }} />
-        </View>
+        <Text style={styles.title}>設定</Text>
         <View style={styles.card}>
           <Text style={{ fontWeight: "600", color: colors.ink, fontSize: 16 }}>
             体重の単位

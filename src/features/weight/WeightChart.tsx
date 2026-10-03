@@ -66,8 +66,8 @@ export function WeightChart({
   );
   return (
     <View
-      style={{ height: 210 }}
-      accessibilityLabel="体重推移グラフ。下の記録一覧からも編集できます。"
+      style={{ flex: 1 }}
+      accessibilityLabel="体重推移グラフ。丸をタップして編集できます。"
     >
       <CartesianChart
         data={data}
