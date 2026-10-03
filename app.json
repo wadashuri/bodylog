@@ -25,9 +25,7 @@
       "expo-font"
     ],
     "scheme": "bodylog",
-    "platforms": [
-      "ios"
-    ],
+    "platforms": ["ios"],
     "extra": {
       "router": {},
       "eas": {

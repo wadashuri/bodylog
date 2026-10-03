@@ -11,13 +11,11 @@ npm run ios
 ```
 
 Expo SDK 57 / React Native / Expo Router / SQLite / Victory Native。
-入力・グラフ・設定の画面は `src/app/`、データ処理は `src/lib/`。
+入力・グラフ・設定の画面は `src/app/`、体重ロジックは `src/features/weight/`、SQLite処理は `src/services/`。
 記録は1日1件。グラフの丸または記録一覧から編集します。
 
 ```sh
-npm run typecheck
-npm run lint
-npm test
+npm run check # 整形・lint・型・テスト＋カバレッジ
 npm run lp # http://localhost:4173
 ```
 
@@ -37,3 +35,5 @@ GitHub Pagesでは `web/` だけを公開します。
 - EASのproductionビルドとApp Store申請
 
 広告・課金・写真はv1.0に含みません。
+
+開発規約・カバレッジ基準・GitHubの必須チェック設定は [開発ガイド](docs/DEVELOPMENT.md) を参照してください。

@@ -12,7 +12,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
-import { useWeights } from "../lib/store";
+import { useWeights } from "../features/weight/WeightProvider";
 import {
   dateObject,
   formatWeightDigits,
@@ -20,7 +20,7 @@ import {
   parseWeight,
   prettyDate,
   weightDigits,
-} from "../lib/weight";
+} from "../features/weight/model";
 import { Button, colors, styles } from "../components/ui";
 export default function Record() {
   const params = useLocalSearchParams<{ date?: string }>();
@@ -44,7 +44,8 @@ export default function Record() {
   const [showDate, setShowDate] = useState(false);
   const [busy, setBusy] = useState(false);
   // 表示単位の丸めで、入力を変えずに保存した値がずれないようにする。
-  const kg = replace && (existing || last) ? (existing || last)!.weightKg : parseWeight(value, unit);
+  const preset = existing ?? last;
+  const kg = replace && preset ? preset.weightKg : parseWeight(value, unit);
   function key(input: string) {
     void Haptics.selectionAsync().catch(() => {});
     if (input === "C") {

@@ -28,9 +28,13 @@
     "victory-native": "^42.0.1"
   },
   "devDependencies": {
+    "@types/node": "^26.6.4",
     "@types/react": "~19.2.2",
+    "c8": "^12.0.0",
     "eslint": "^9.39.5",
     "eslint-config-expo": "~57.0.2",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.9",
     "tsx": "^4.23.15",
     "typescript": "~6.0.3"
   },
@@ -40,9 +44,13 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
-    "lint": "expo lint",
+    "lint": "eslint . --max-warnings=0",
     "test": "tsx --test tests/*.test.ts",
-    "lp": "python3 -m http.server 4173 --directory web"
+    "lp": "python3 -m http.server 4173 --directory web",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test:coverage": "c8 tsx --test tests/*.test.ts",
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run test:coverage"
   },
   "private": true,
   "engines": {

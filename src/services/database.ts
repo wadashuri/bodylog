@@ -1,5 +1,5 @@
 import * as SQLite from "expo-sqlite";
-import type { WeightEntry } from "./weight";
+import type { WeightEntry } from "../features/weight/model";
 let connection: Promise<SQLite.SQLiteDatabase> | undefined;
 async function initialize() {
   const db = await SQLite.openDatabaseAsync("bodylog.db");

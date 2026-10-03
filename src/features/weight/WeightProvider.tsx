@@ -6,8 +6,8 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
-import * as db from "./database";
-import type { Unit, WeightEntry } from "./weight";
+import * as db from "../../services/database";
+import type { Unit, WeightEntry } from "./model";
 import * as StoreReview from "expo-store-review";
 type State = {
   entries: WeightEntry[];
@@ -44,10 +44,9 @@ export function WeightProvider({ children }: { children: ReactNode }) {
       setError("記録を読み込めませんでした。もう一度お試しください。");
     }
   }, []);
-  // SQLite resolves asynchronously before any state update.
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    void reload();
+    // 非同期の読み込み完了で状態を更新する。レンダー中には更新しない。
+    void Promise.resolve().then(reload);
   }, [reload]);
   async function save(date: string, kg: number) {
     await db.saveWeight(date, kg);
