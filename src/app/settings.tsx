@@ -10,8 +10,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { colors, styles } from "../components/ui";
-import { useWeights } from "../lib/store";
-import { APP_NAME, SITE_URL, SUPPORT_EMAIL } from "../lib/config";
+import { useWeights } from "../features/weight/WeightProvider";
+import { APP_NAME, SITE_URL, SUPPORT_EMAIL } from "../constants/config";
 export default function Settings() {
   const { unit, changeUnit } = useWeights();
   async function open(url: string) {

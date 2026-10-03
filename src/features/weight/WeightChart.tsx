@@ -1,15 +1,15 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { View } from "react-native";
 import { CartesianChart, Line, Scatter } from "victory-native";
 import { matchFont } from "@shopify/react-native-skia";
 import { Gesture } from "react-native-gesture-handler";
-import { colors } from "./ui";
+import { colors } from "../../components/ui";
 import {
   dateObject,
   displayWeight,
   type Unit,
   type WeightEntry,
-} from "../lib/weight";
+} from "./model";
 export function WeightChart({
   entries,
   unit,
@@ -27,7 +27,9 @@ export function WeightChart({
       })),
     [entries, unit],
   );
-  const locations = useRef<{ x: number; y: number; entry: WeightEntry }[]>([]);
+  const [locations, setLocations] = useState<
+    { x: number; y: number; entry: WeightEntry }[]
+  >([]);
   const font = useMemo(
     () => matchFont({ fontFamily: "Helvetica", fontSize: 11 }),
     [],
@@ -40,7 +42,7 @@ export function WeightChart({
     last = data[data.length - 1]?.x ?? first;
   const handleTap = useCallback(
     (event: { x: number; y: number }) => {
-      const nearest = locations.current.reduce<{
+      const nearest = locations.reduce<{
         x: number;
         y: number;
         entry: WeightEntry;
@@ -56,11 +58,9 @@ export function WeightChart({
       if (nearest && Math.hypot(event.x - nearest.x, event.y - nearest.y) < 30)
         onSelect(nearest.entry);
     },
-    [onSelect],
+    [locations, onSelect],
   );
-  // RNGH registers this callback; it never invokes it during render.
   const gesture = useMemo(
-    // eslint-disable-next-line react-hooks/refs
     () => Gesture.Race(Gesture.Tap().runOnJS(true).onEnd(handleTap)),
     [handleTap],
   );
@@ -84,11 +84,22 @@ export function WeightChart({
         domainPadding={{ left: 12, right: 12 }}
         customGestures={gesture}
         onScaleChange={(xScale, yScale) => {
-          locations.current = entries.map((entry, i) => ({
+          const next = entries.map((entry, i) => ({
             x: xScale(data[i].x),
             y: yScale(data[i].weight),
             entry,
           }));
+          setLocations((previous) =>
+            previous.length === next.length &&
+            previous.every(
+              (point, i) =>
+                point.x === next[i].x &&
+                point.y === next[i].y &&
+                point.entry === next[i].entry,
+            )
+              ? previous
+              : next,
+          );
         }}
         axisOptions={{
           font,

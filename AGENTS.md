@@ -1,3 +1,7 @@
+# Bodylog: repository instructions
+
+Before changing code, read [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md), the single source of truth for architecture, tests, and Git workflow. Run `npm run check` before declaring work complete. Use `feature/{Notion task ID}` branches and PRs; do not push directly to main.
+
 This is an Expo/React Native mobile application. Prioritize mobile-first patterns, performance, and cross-platform compatibility.
 
 ## Expo has changed — do not trust your training data

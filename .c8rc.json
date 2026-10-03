@@ -1,0 +1,12 @@
+{
+  "all": true,
+  "include": ["src/features/**/*.ts", "src/utils/**/*.ts"],
+  "exclude": [],
+  "reporter": ["text", "html", "lcov", "json-summary"],
+  "check-coverage": true,
+  "per-file": true,
+  "statements": 80,
+  "branches": 80,
+  "functions": 80,
+  "lines": 80
+}

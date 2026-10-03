@@ -1,6 +1,8 @@
 const { defineConfig } = require("eslint/config");
 const expo = require("eslint-config-expo/flat");
+const prettier = require("eslint-config-prettier/flat");
 module.exports = defineConfig([
   expo,
-  { ignores: ["dist/**", "web/**", "node_modules/**"] },
+  prettier,
+  { ignores: ["dist/**", "coverage/**", "web/**", "node_modules/**"] },
 ]);

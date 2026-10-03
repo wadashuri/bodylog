@@ -11,7 +11,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { useWeights } from "../lib/store";
+import { useWeights } from "../features/weight/WeightProvider";
 import {
   dateObject,
   displayWeight,
@@ -21,9 +21,9 @@ import {
   recordingStreak,
   type Period,
   type WeightEntry,
-} from "../lib/weight";
+} from "../features/weight/model";
 import { Button, colors, styles } from "../components/ui";
-import { WeightChart } from "../components/WeightChart";
+import { WeightChart } from "../features/weight/WeightChart";
 export default function Home() {
   const {
     entries,
@@ -120,7 +120,11 @@ export default function Home() {
             <View
               style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
             >
-              <Ionicons name="barbell-outline" size={19} color={colors.accentText} />
+              <Ionicons
+                name="barbell-outline"
+                size={19}
+                color={colors.accentText}
+              />
               <Text style={{ color: colors.ink, fontWeight: "700" }}>
                 {streak
                   ? `ナイス！${streak}日続いてる。`
@@ -128,7 +132,11 @@ export default function Home() {
               </Text>
             </View>
             <Text
-              style={{ color: colors.accentText, fontSize: 12, fontWeight: "700" }}
+              style={{
+                color: colors.accentText,
+                fontSize: 12,
+                fontWeight: "700",
+              }}
             >
               {week.filter((d) => d.done).length}/7
             </Text>
