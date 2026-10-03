@@ -12,7 +12,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
-import { useWeights } from "../features/weight/WeightProvider";
+import { useWeights } from "../../features/weight/WeightProvider";
 import {
   dateObject,
   formatWeightDigits,
@@ -20,16 +20,19 @@ import {
   parseWeight,
   prettyDate,
   weightDigits,
-} from "../features/weight/model";
-import { Button, colors, styles } from "../components/ui";
-export default function Record() {
+} from "../../features/weight/model";
+import { colors, styles } from "../../components/ui";
+function resolveDate(param?: string) {
+  return param && /^\d{4}-\d{2}-\d{2}$/.test(param) ? param : localDate();
+}
+export default function RecordScreen() {
   const params = useLocalSearchParams<{ date?: string }>();
+  const initialDate = resolveDate(params.date);
+  return <RecordForm key={initialDate} initialDate={initialDate} />;
+}
+function RecordForm({ initialDate }: { initialDate: string }) {
   const { entries, unit, save, remove } = useWeights();
-  const [date, setDate] = useState(
-    params.date && /^\d{4}-\d{2}-\d{2}$/.test(params.date)
-      ? params.date
-      : localDate(),
-  );
+  const [date, setDate] = useState(initialDate);
   const existing = entries.find((e) => e.date === date);
   const last = entries[entries.length - 1];
   const [digits, setDigits] = useState(
@@ -73,7 +76,7 @@ export default function Record() {
       void Haptics.notificationAsync(
         Haptics.NotificationFeedbackType.Success,
       ).catch(() => {});
-      router.back();
+      router.replace("/");
     } catch {
       Alert.alert(
         "保存できませんでした",
@@ -93,7 +96,8 @@ export default function Record() {
           setBusy(true);
           try {
             await remove(date);
-            router.back();
+            setDigits("");
+            setReplace(false);
           } catch {
             Alert.alert("削除できませんでした", "もう一度お試しください。");
           } finally {
@@ -104,22 +108,27 @@ export default function Record() {
     ]);
   }
   return (
-    <SafeAreaView style={styles.screen}>
-      <ScrollView contentContainerStyle={[styles.content, { gap: 24 }]}>
-        <View style={styles.row}>
-          <Text style={styles.title}>
-            {existing ? "体重を編集" : "体重を記録"}
-          </Text>
+    <SafeAreaView style={s.screen} edges={["top", "left", "right"]}>
+      <View style={s.header}>
+        <Text style={s.headerTitle}>体重記録</Text>
+        {existing && (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="閉じる"
-            hitSlop={15}
+            accessibilityLabel="この記録を削除"
             disabled={busy}
-            onPress={() => router.back()}
+            hitSlop={12}
+            onPress={confirmDelete}
+            style={s.headerAction}
           >
-            <Ionicons name="close" size={25} color={colors.ink} />
+            <Ionicons
+              name="trash-outline"
+              size={19}
+              color={colors.headerText}
+            />
           </Pressable>
-        </View>
+        )}
+      </View>
+      <ScrollView contentContainerStyle={[styles.content, { gap: 20 }]}>
         <View style={styles.card}>
           <Pressable
             accessibilityRole="button"
@@ -135,11 +144,9 @@ export default function Record() {
               <Text style={{ fontSize: 15, color: colors.ink }}>
                 {prettyDate(date)}
               </Text>
-              <Ionicons
-                name="calendar-outline"
-                size={19}
-                color={colors.accent}
-              />
+              <View style={s.editDate}>
+                <Ionicons name="pencil" size={14} color="#FFFFFF" />
+              </View>
             </View>
           </Pressable>
           {showDate && (
@@ -167,19 +174,28 @@ export default function Record() {
               }}
             />
           )}
+        </View>
+        <View style={s.weightBox}>
+          <Text style={s.weightLabel}>体重</Text>
           <View style={s.weight}>
-            <Text style={[s.number, replace && { color: colors.accentText }]}>
-              {value || "0.0"}
-            </Text>
+            <Text style={s.number}>{value || "0.00"}</Text>
             <Text style={s.unit}>{unit}</Text>
           </View>
-          <Text
-            style={{ color: colors.muted, textAlign: "center", fontSize: 12 }}
-          >
-            {replace && value
-              ? "前回の値を表示しています。そのまま保存できます。"
-              : `726 → 72.6${unit} · 小数点は自動で入ります`}
-          </Text>
+          {!!value && (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="入力をクリア"
+              disabled={busy}
+              hitSlop={12}
+              onPress={() => key("C")}
+            >
+              <Ionicons
+                name="close-circle-outline"
+                size={22}
+                color={colors.highlightText}
+              />
+            </Pressable>
+          )}
         </View>
         <View style={s.keypad}>
           {["1", "2", "3", "4", "5", "6", "7", "8", "9", "C", "0", "back"].map(
@@ -215,64 +231,80 @@ export default function Record() {
             20〜350kg相当の体重を入力してください。
           </Text>
         )}
-        <Button
-          label={busy ? "保存中…" : existing ? "変更を保存" : "記録を保存"}
+        <Pressable
+          accessibilityRole="button"
           disabled={kg === null || busy}
           onPress={() => void submit()}
-        />
-        <View style={styles.row}>
-          <Pressable
-            accessibilityRole="button"
-            disabled={busy}
-            hitSlop={12}
-            onPress={() => key("C")}
-          >
-            <Text style={styles.text}>入力をクリア</Text>
-          </Pressable>
-          {existing && (
-            <Pressable
-              accessibilityRole="button"
-              disabled={busy}
-              hitSlop={12}
-              onPress={confirmDelete}
-            >
-              <Text style={{ color: colors.danger, fontSize: 14 }}>
-                この記録を削除
-              </Text>
-            </Pressable>
-          )}
-        </View>
+          style={({ pressed }) => [
+            s.okButton,
+            { opacity: kg === null || busy ? 0.45 : pressed ? 0.85 : 1 },
+          ]}
+        >
+          <Text style={s.okText}>{busy ? "保存中…" : "OK"}</Text>
+        </Pressable>
       </ScrollView>
     </SafeAreaView>
   );
 }
 const s = StyleSheet.create({
-  weight: {
-    flexDirection: "row",
+  screen: { flex: 1, backgroundColor: colors.bg },
+  header: {
+    backgroundColor: colors.header,
+    paddingVertical: 16,
+    alignItems: "center",
     justifyContent: "center",
-    alignItems: "baseline",
-    gap: 10,
-    marginTop: 28,
-    marginBottom: 14,
   },
+  headerTitle: { color: colors.headerText, fontSize: 17, fontWeight: "700" },
+  headerAction: {
+    position: "absolute",
+    right: 20,
+    top: 14,
+    padding: 4,
+  },
+  editDate: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: colors.accentText,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  weightBox: {
+    backgroundColor: colors.highlight,
+    borderRadius: 18,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  weightLabel: { fontSize: 15, fontWeight: "700", color: colors.highlightText },
+  weight: { flexDirection: "row", alignItems: "baseline", gap: 8 },
   number: {
-    fontSize: 64,
-    fontWeight: "500",
-    color: colors.ink,
+    fontSize: 46,
+    fontWeight: "700",
+    color: colors.highlightText,
     fontVariant: ["tabular-nums"],
-    letterSpacing: -2,
+    letterSpacing: -1,
   },
-  unit: { fontSize: 20, color: colors.muted },
+  unit: { fontSize: 16, color: colors.highlightText, fontWeight: "600" },
   keypad: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
   key: {
     width: "31%",
     flexGrow: 1,
-    height: 72,
+    height: 68,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 16,
     borderWidth: 1,
     borderColor: colors.border,
   },
-  keyText: { fontSize: 30, color: colors.ink, fontWeight: "500" },
+  keyText: { fontSize: 28, color: colors.ink, fontWeight: "700" },
+  okButton: {
+    backgroundColor: colors.accent,
+    paddingVertical: 18,
+    borderRadius: 18,
+    alignItems: "center",
+  },
+  okText: { color: "#3A2614", fontWeight: "800", fontSize: 18 },
 });

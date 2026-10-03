@@ -10,6 +10,8 @@ import {
   weightDigits,
   recordingStreak,
   prettyDate,
+  parseWeightCsv,
+  toWeightCsv,
 } from "../src/features/weight/model";
 test("数字だけの入力に小数点を自動で入れ、削除でも桁を戻す", () => {
   assert.equal(formatWeightDigits(""), "");
@@ -118,4 +120,70 @@ test("30日の境界と欠測日を保ったまま抽出する", () => {
     ["2026-09-04", "2026-10-03"],
   );
   assert.equal(periodEntries(entries, "all").length, 4);
+});
+test("シンプルダイエット形式(日時+スラッシュ)のCSVを読み込める", () => {
+  const csv = [
+    "日時 [Asia/Tokyo],体重 [kg],体脂肪率,食事,運動,メモ,Event-1,Event-2,Event-3",
+    "2024/07/01 8:47:28,73.7,,,,,,,",
+    "2024/07/21 16:21:06,72.8,,,,,,,",
+  ].join("\n");
+  assert.deepEqual(parseWeightCsv(csv), {
+    entries: [
+      { date: "2024-07-01", weightKg: 73.7 },
+      { date: "2024-07-21", weightKg: 72.8 },
+    ],
+    skipped: 0,
+  });
+});
+test("プロ生ちゃん形式(YYYYMMDD)のCSVを読み込める", () => {
+  const csv = [
+    "日付(YYYYMMDD形式),体重,体脂肪率,汎用,目標体重,メモ",
+    "20231220,68.5,,,,",
+  ].join("\n");
+  assert.deepEqual(parseWeightCsv(csv), {
+    entries: [{ date: "2023-12-20", weightKg: 68.5 }],
+    skipped: 0,
+  });
+});
+test("不正な行はスキップし、同じ日付は後勝ちでマージする", () => {
+  const csv = [
+    "日付,体重 [kg]",
+    "2026-10-01,70.0",
+    "2026-13-40,70.0",
+    "2026-10-02,abc",
+    "2026-10-03,999",
+    "2026-10-01,71.2",
+  ].join("\n");
+  assert.deepEqual(parseWeightCsv(csv), {
+    entries: [{ date: "2026-10-01", weightKg: 71.2 }],
+    skipped: 3,
+  });
+});
+test("日時・体重の列が見つからないCSVは空で返す", () => {
+  assert.deepEqual(parseWeightCsv("a,b\n1,2"), { entries: [], skipped: 1 });
+  assert.deepEqual(parseWeightCsv(""), { entries: [], skipped: 0 });
+});
+test("ダブルクォートで囲まれた列(カンマ・エスケープ引用符を含む)を正しく分割する", () => {
+  const csv = [
+    "日時,体重 [kg],メモ",
+    '2026-10-01,70.5,"朝,体調良い ""元気"""',
+  ].join("\n");
+  assert.deepEqual(parseWeightCsv(csv), {
+    entries: [{ date: "2026-10-01", weightKg: 70.5 }],
+    skipped: 0,
+  });
+});
+test("自分のエクスポートしたCSVを自分で読み込める(往復)", () => {
+  const entries = entriesFor(["2026-10-01", "2026-10-02"]).map((e) => ({
+    ...e,
+    weightKg: 70.5,
+  }));
+  const parsed = parseWeightCsv(toWeightCsv(entries));
+  assert.deepEqual(parsed, {
+    entries: [
+      { date: "2026-10-01", weightKg: 70.5 },
+      { date: "2026-10-02", weightKg: 70.5 },
+    ],
+    skipped: 0,
+  });
 });
