@@ -74,6 +74,8 @@ npm run check         # format → lint → typecheck → test:coverage
 5. `npm run format`、`npm run check` を実行。
 6. pushしてPRを作成。CI成功を確認してからマージ。mainへ直接pushしません。
 
+1タスクが複数の独立した塊を含み大きすぎる場合は、機能ごとに `feature/{NotionタスクID}-1`、`-2`…とスタック型ブランチに分割する（2本目は1本目のブランチから切る。mainへは都度マージせず、1本目が終わったら2本目を切る形で進める）。
+
 不要なリファクタリングを同時に行いません。ライブラリ追加時は、既存の標準機能で解けるか、Expo SDK互換性、ネイティブビルドへの影響を確認し、理由をPRに記載。インストールは `npx expo install` を使い、lockfileを更新します。
 
 CI失敗・未確認の操作を完成と報告しません。署名付きiOSビルドやApp Store審査はこのCIに含めず、リリースタスクで別途確認します。

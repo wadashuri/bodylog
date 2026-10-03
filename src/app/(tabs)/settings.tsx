@@ -103,7 +103,7 @@ export default function Settings() {
                   style={{
                     fontSize: 17,
                     fontWeight: "600",
-                    color: unit === next ? "#3A2614" : colors.muted,
+                    color: unit === next ? colors.onAccent : colors.muted,
                   }}
                 >
                   {next}

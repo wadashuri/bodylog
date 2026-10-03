@@ -6,19 +6,20 @@ import {
   type StyleProp,
 } from "react-native";
 export const colors = {
-  bg: "#F3E4C8",
+  bg: "#FFF8F6",
   card: "#FFFFFF",
   ink: "#2C241A",
   muted: "#93826A",
-  accent: "#EFA13C",
-  accentText: "#8A4A1E",
-  border: "#E3CFA6",
-  pale: "#FBEAC9",
+  accent: "#E8432E",
+  accentText: "#C23323",
+  onAccent: "#FFFFFF",
+  border: "#F3DCD6",
+  pale: "#FDE7E2",
   danger: "#B84E43",
-  header: "#5B4335",
+  header: "#E8432E",
   headerText: "#FFFFFF",
-  highlight: "#F6D568",
-  highlightText: "#4A2E12",
+  highlight: "#E8432E",
+  highlightText: "#FFFFFF",
 };
 export function Button({
   label,
@@ -81,5 +82,5 @@ export const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: "center",
   },
-  buttonText: { color: "#3A2614", fontWeight: "800", fontSize: 16 },
+  buttonText: { color: colors.onAccent, fontWeight: "800", fontSize: 16 },
 });

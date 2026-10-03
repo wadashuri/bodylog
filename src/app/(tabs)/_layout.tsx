@@ -5,7 +5,6 @@ import { colors } from "../../components/ui";
 export default function TabLayout() {
   return (
     <Tabs
-      initialRouteName="record"
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.accentText,
@@ -21,7 +20,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="graph"
         options={{
           title: "グラフ",
           tabBarIcon: ({ color, size }) => (
@@ -29,8 +28,9 @@ export default function TabLayout() {
           ),
         }}
       />
+      {/* index.tsx is the 記録 screen so cold launch at "/" opens it directly */}
       <Tabs.Screen
-        name="record"
+        name="index"
         options={{
           title: "記録",
           tabBarIcon: ({ color, focused }) => (
@@ -47,7 +47,7 @@ export default function TabLayout() {
               <Ionicons
                 name="create"
                 size={19}
-                color={focused ? "#3A2614" : color}
+                color={focused ? colors.onAccent : color}
               />
             </View>
           ),
