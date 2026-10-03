@@ -3,7 +3,10 @@
   "build": {
     "development": { "developmentClient": true, "distribution": "internal" },
     "preview": { "distribution": "internal" },
-    "production": { "autoIncrement": true }
+    "production": {
+      "autoIncrement": true,
+      "env": { "EXPO_PUBLIC_SITE_URL": "https://wadashuri.github.io/bodylog/" }
+    }
   },
   "submit": { "production": {} }
 }

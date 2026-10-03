@@ -27,6 +27,13 @@
     "scheme": "bodylog",
     "platforms": [
       "ios"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "1494d637-1be2-4830-9478-52f05c5f6c97"
+      }
+    },
+    "owner": "shuri0108"
   }
 }

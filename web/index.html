@@ -1,23 +1,351 @@
 <!doctype html>
 <html lang="ja">
-<head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>筋トレ体重記録 — 体の変化を、毎日。</title>
-  <meta name="description" content="毎日の体重をシンプルに記録。見やすいグラフで変化を振り返る、iPhone向け体重記録アプリ。データは端末内に保存。">
-  <style>
-    :root{--bg:#f6f5f1;--ink:#252f29;--muted:#727b73;--green:#365e49;--line:#e1e5dc}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:85px}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Noto Sans JP",sans-serif;line-height:1.8}a{color:var(--green);text-underline-offset:4px}header{max-width:1060px;margin:auto;padding:25px 32px;display:flex;align-items:center;justify-content:space-between}.brand{text-decoration:none;font-weight:700;letter-spacing:2px;font-size:14px}nav{display:flex;gap:22px;font-size:12px}main{max-width:1060px;margin:auto;padding:0 32px}.hero{padding:95px 0 85px;display:grid;grid-template-columns:1.3fr 1fr;gap:70px;align-items:center}.eyebrow{font-size:12px;letter-spacing:3px;color:var(--muted);font-weight:600}h1{font-size:clamp(38px,5vw,64px);line-height:1.45;letter-spacing:-2px;margin:20px 0 24px}h2{font-size:26px;line-height:1.5}h3{font-size:16px}p{color:var(--muted);font-size:14px}.lead{font-size:16px;max-width:400px}.pill{display:inline-block;background:var(--green);color:#fff;padding:13px 24px;border-radius:12px;font-size:13px;margin-top:20px}.phone{background:#fff;border:1px solid var(--line);border-radius:32px;padding:30px 24px;box-shadow:0 20px 70px #252f2910;max-width:310px;margin:auto;width:100%}.phone small{color:var(--muted);font-size:11px}.number{font-size:48px;line-height:1.4;letter-spacing:-2px}.number span{font-size:16px;letter-spacing:0;color:var(--muted)}.chart{width:100%;height:160px;margin:20px 0}.record{background:var(--green);color:white;border-radius:15px;padding:15px 18px;display:flex;align-items:center;justify-content:space-between}.record small{color:#d5dfd6}.features{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;padding:45px 0 75px;border-top:1px solid var(--line)}.feature-no{color:var(--green);font-size:12px;letter-spacing:2px}.section{padding:55px 0;border-top:1px solid var(--line);max-width:800px}.section p{max-width:700px}.contact{display:inline-block;margin-top:10px;font-size:16px}footer{padding:30px 0 45px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);display:flex;justify-content:space-between}.note{font-size:11px;text-align:center;margin:14px 0 0}ul{padding-left:20px;color:var(--muted);font-size:14px}:focus-visible{outline:3px solid #95b99e;outline-offset:5px}@media(max-width:700px){header{padding:20px}nav{gap:12px;font-size:10px}main{padding:0 24px}.hero{grid-template-columns:1fr;padding:50px 0;gap:40px}h1{font-size:43px}.features{grid-template-columns:1fr;gap:22px;padding:35px 0}.section{padding:35px 0}.phone{max-width:290px}footer{display:block}}
-  </style>
-</head>
-<body>
-<header><a class="brand" href="#">BODYLOG</a><nav aria-label="ページ内ナビゲーション"><a href="#support">お問い合わせ</a><a href="#privacy">プライバシー</a></nav></header>
-<main>
-  <section class="hero" aria-labelledby="hero-title">
-    <div><div class="eyebrow">毎日の体重を、シンプルに。</div><h1 id="hero-title">体の変化を、<br>毎日。</h1><p class="lead">筋トレの積み重ねを、体重の記録から。<br>入力は手軽に、振り返りはグラフで。<br>あなたの記録は、あなたの端末に。</p><span class="pill">iPhone向け · リリース準備中</span></div>
-    <div><div class="phone" aria-label="体重グラフのイメージ"><small>体重の推移</small><div class="number">72.6 <span>kg</span></div><svg class="chart" viewBox="0 0 260 170" role="img" aria-label="体重推移のサンプルグラフ"><g stroke="#e5e7df" stroke-dasharray="4 4"><path d="M0 25H260M0 65H260M0 105H260M0 145H260"/></g><path d="M10 136L50 95L90 126L130 36L170 96L210 116L250 105" fill="none" stroke="#365e49" stroke-width="3"/><g fill="white" stroke="#365e49" stroke-width="2"><circle cx="10" cy="136" r="5"/><circle cx="50" cy="95" r="5"/><circle cx="90" cy="126" r="5"/><circle cx="130" cy="36" r="5"/><circle cx="170" cy="96" r="5"/><circle cx="210" cy="116" r="5"/><circle cx="250" cy="105" r="5"/></g></svg><div class="record"><div><small>今日の体重</small><br>記録する</div><span aria-hidden="true">＋</span></div></div><p class="note">表示はイメージです。</p></div>
-  </section>
-  <section class="features" aria-label="特徴"><div><span class="feature-no">01 / RECORD</span><h3>さっと記録。</h3><p>体重を入力して保存。毎日の習慣を、少ない操作で続けられます。</p></div><div><span class="feature-no">02 / REFLECT</span><h3>変化が見える。</h3><p>体重の推移をグラフで確認。日々の数字を、積み重ねとして振り返れます。</p></div><div><span class="feature-no">03 / PRIVATE</span><h3>記録は端末の中に。</h3><p>アカウント登録は不要。体重データを開発者のサーバーに送信しません。</p></div></section>
-  <section class="section" id="support"><div class="eyebrow">SUPPORT</div><h2>お問い合わせ</h2><p>不具合、ご質問、ご要望はメールでお知らせください。不具合の場合は、iPhoneの機種・iOSのバージョン・発生した操作を添えていただくと確認がスムーズです。</p><a class="contact" href="mailto:slaboratory.info@gmail.com?subject=%E7%AD%8B%E3%83%88%E3%83%AC%E4%BD%93%E9%87%8D%E8%A8%98%E9%8C%B2%20%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B">slaboratory.info@gmail.com</a></section>
-  <section class="section" id="privacy"><div class="eyebrow">PRIVACY POLICY</div><h2>プライバシーポリシー</h2><p>対象：筋トレ体重記録 v1.0 ／ 制定日：2026年10月3日<br>運営者：和田朱利（S Laboratory）</p><h3>保存する情報と目的</h3><p>体重、記録日、表示単位、初回案内・レビュー依頼の状態を、記録・表示などの機能提供のために端末内に保存します。開発者はこれらの情報を取得せず、第三者に提供しません。</p><h3>外部サービス</h3><p>v1.0は広告・アクセス解析SDKを利用しません。アプリ内のレビュー依頼はAppleの機能を利用します。このWebページにも広告やアクセス解析、独自のCookieはありません。Webの配信事業者やお問い合わせ先のメールサービスでは、各事業者の方針に従って通信情報が処理される場合があります。</p><h3>データの削除とバックアップ</h3><p>体重記録はアプリの編集画面から削除できます。アプリを削除すると端末内のデータも削除されます。端末の設定によってはOSのバックアップに含まれる場合があります。</p><h3>お問い合わせ</h3><p>メールでお送りいただいた情報は、お問い合わせへの対応に利用します。ご質問や削除のご相談は<a href="mailto:slaboratory.info@gmail.com">slaboratory.info@gmail.com</a>までご連絡ください。</p><h3>変更</h3><p>機能やデータの取り扱いを変更する際は、このページを更新します。</p></section>
-  <footer><span>© 2026 S Laboratory</span><span>筋トレ体重記録 · BODYLOG</span></footer>
-</main>
-</body></html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>筋トレ体重記録 — 今日も、いい一歩。</title>
+    <meta
+      name="description"
+      content="毎日の体重をシンプルに記録。見やすいグラフで変化を振り返る、iPhone向け体重記録アプリ。データは端末内に保存。"
+    />
+    <style>
+      :root {
+        --bg: #FAF8F5;
+        --ink: #2C3540;
+        --muted: #7B828B;
+        --green: #F2AE68;
+        --line: #EAE5DF;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 85px;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Noto Sans JP",
+          sans-serif;
+        line-height: 1.8;
+      }
+      a {
+        color: var(--green);
+        text-underline-offset: 4px;
+      }
+      header {
+        max-width: 1060px;
+        margin: auto;
+        padding: 25px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .brand {
+        text-decoration: none;
+        font-weight: 700;
+        letter-spacing: 2px;
+        font-size: 14px;
+      }
+      nav {
+        display: flex;
+        gap: 22px;
+        font-size: 12px;
+      }
+      main {
+        max-width: 1060px;
+        margin: auto;
+        padding: 0 32px;
+      }
+      .hero {
+        padding: 95px 0 85px;
+        display: grid;
+        grid-template-columns: 1.3fr 1fr;
+        gap: 70px;
+        align-items: center;
+      }
+      .eyebrow {
+        font-size: 12px;
+        letter-spacing: 3px;
+        color: var(--muted);
+        font-weight: 600;
+      }
+      h1 {
+        font-size: clamp(38px, 5vw, 64px);
+        line-height: 1.45;
+        letter-spacing: -2px;
+        margin: 20px 0 24px;
+      }
+      h2 {
+        font-size: 26px;
+        line-height: 1.5;
+      }
+      h3 {
+        font-size: 16px;
+      }
+      p {
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .lead {
+        font-size: 16px;
+        max-width: 400px;
+      }
+      .pill {
+        display: inline-block;
+        background: var(--green);
+        color: #3A2614;
+        padding: 13px 24px;
+        border-radius: 12px;
+        font-size: 13px;
+        margin-top: 20px;
+      }
+      .phone {
+        background: #FFFFFF;
+        border: 1px solid var(--line);
+        border-radius: 32px;
+        padding: 30px 24px;
+        box-shadow: 0 20px 70px #252f2910;
+        max-width: 310px;
+        margin: auto;
+        width: 100%;
+      }
+      .phone small {
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .number {
+        font-size: 48px;
+        line-height: 1.4;
+        letter-spacing: -2px;
+      }
+      .number span {
+        font-size: 16px;
+        letter-spacing: 0;
+        color: var(--muted);
+      }
+      .chart {
+        width: 100%;
+        height: 160px;
+        margin: 20px 0;
+      }
+      .record {
+        background: var(--green);
+        color: #3A2614;
+        border-radius: 15px;
+        padding: 15px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .record small {
+        color: #A76B38;
+      }
+      .features {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px;
+        padding: 45px 0 75px;
+        border-top: 1px solid var(--line);
+      }
+      .feature-no {
+        color: var(--green);
+        font-size: 12px;
+        letter-spacing: 2px;
+      }
+      .section {
+        padding: 55px 0;
+        border-top: 1px solid var(--line);
+        max-width: 800px;
+      }
+      .section p {
+        max-width: 700px;
+      }
+      .contact {
+        display: inline-block;
+        margin-top: 10px;
+        font-size: 16px;
+      }
+      footer {
+        padding: 30px 0 45px;
+        border-top: 1px solid var(--line);
+        font-size: 11px;
+        color: var(--muted);
+        display: flex;
+        justify-content: space-between;
+      }
+      .note {
+        font-size: 11px;
+        text-align: center;
+        margin: 14px 0 0;
+      }
+      ul {
+        padding-left: 20px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      :focus-visible {
+        outline: 3px solid #95b99e;
+        outline-offset: 5px;
+      }
+      @media (max-width: 700px) {
+        header {
+          padding: 20px;
+        }
+        nav {
+          gap: 12px;
+          font-size: 10px;
+        }
+        main {
+          padding: 0 24px;
+        }
+        .hero {
+          grid-template-columns: 1fr;
+          padding: 50px 0;
+          gap: 40px;
+        }
+        h1 {
+          font-size: 43px;
+        }
+        .features {
+          grid-template-columns: 1fr;
+          gap: 22px;
+          padding: 35px 0;
+        }
+        .section {
+          padding: 35px 0;
+        }
+        .phone {
+          max-width: 290px;
+        }
+        footer {
+          display: block;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="#">BODYLOG</a>
+      <nav aria-label="ページ内ナビゲーション">
+        <a href="#support">お問い合わせ</a><a href="#privacy">プライバシー</a>
+      </nav>
+    </header>
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div>
+          <div class="eyebrow">毎日の体重を、シンプルに。</div>
+          <h1 id="hero-title">今日も、<br />いい一歩。</h1>
+          <p class="lead">
+            筋トレの積み重ねを、体重の記録から。<br />入力は手軽に、振り返りはグラフで。<br />あなたの記録は、あなたの端末に。
+          </p>
+          <span class="pill">iPhone向け · リリース準備中</span>
+        </div>
+        <div>
+          <div class="phone" aria-label="体重グラフのイメージ">
+            <small>体重の推移</small>
+            <div class="number">72.6 <span>kg</span></div>
+            <svg
+              class="chart"
+              viewBox="0 0 260 170"
+              role="img"
+              aria-label="体重推移のサンプルグラフ"
+            >
+              <g stroke="#EAE5DF" stroke-dasharray="4 4">
+                <path d="M0 25H260M0 65H260M0 105H260M0 145H260" />
+              </g>
+              <path
+                d="M10 136L50 95L90 126L130 36L170 96L210 116L250 105"
+                fill="none"
+                stroke="#F2AE68"
+                stroke-width="3"
+              />
+              <g fill="#FFFFFF" stroke="#F2AE68" stroke-width="2">
+                <circle cx="10" cy="136" r="5" />
+                <circle cx="50" cy="95" r="5" />
+                <circle cx="90" cy="126" r="5" />
+                <circle cx="130" cy="36" r="5" />
+                <circle cx="170" cy="96" r="5" />
+                <circle cx="210" cy="116" r="5" />
+                <circle cx="250" cy="105" r="5" />
+              </g>
+            </svg>
+            <div class="record">
+              <div><small>今日の体重</small><br />記録する</div>
+              <span aria-hidden="true">＋</span>
+            </div>
+          </div>
+          <p class="note">表示はイメージです。</p>
+        </div>
+      </section>
+      <section class="features" aria-label="特徴">
+        <div>
+          <span class="feature-no">01 / RECORD</span>
+          <h3>さっと記録。</h3>
+          <p>体重を入力して保存。毎日の習慣を、少ない操作で続けられます。</p>
+        </div>
+        <div>
+          <span class="feature-no">02 / REFLECT</span>
+          <h3>変化が見える。</h3>
+          <p>
+            体重の推移をグラフで確認。日々の数字を、積み重ねとして振り返れます。
+          </p>
+        </div>
+        <div>
+          <span class="feature-no">03 / PRIVATE</span>
+          <h3>記録は端末の中に。</h3>
+          <p>
+            アカウント登録は不要。体重データを開発者のサーバーに送信しません。
+          </p>
+        </div>
+      </section>
+      <section class="section" id="support">
+        <div class="eyebrow">SUPPORT</div>
+        <h2>お問い合わせ</h2>
+        <p>
+          不具合、ご質問、ご要望はメールでお知らせください。不具合の場合は、iPhoneの機種・iOSのバージョン・発生した操作を添えていただくと確認がスムーズです。
+        </p>
+        <a
+          class="contact"
+          href="mailto:slaboratory.info@gmail.com?subject=%E7%AD%8B%E3%83%88%E3%83%AC%E4%BD%93%E9%87%8D%E8%A8%98%E9%8C%B2%20%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B"
+          >slaboratory.info@gmail.com</a
+        >
+      </section>
+      <section class="section" id="privacy">
+        <div class="eyebrow">PRIVACY POLICY</div>
+        <h2>プライバシーポリシー</h2>
+        <p>
+          対象：筋トレ体重記録 v1.0 ／ 制定日：2026年10月3日<br />運営者：和田朱利（S
+          Laboratory）
+        </p>
+        <h3>保存する情報と目的</h3>
+        <p>
+          体重、記録日、表示単位、初回案内・レビュー依頼の状態を、記録・表示などの機能提供のために端末内に保存します。開発者はこれらの情報を取得せず、第三者に提供しません。
+        </p>
+        <h3>外部サービス</h3>
+        <p>
+          v1.0は広告・アクセス解析SDKを利用しません。アプリ内のレビュー依頼はAppleの機能を利用します。このWebページにも広告やアクセス解析、独自のCookieはありません。Webの配信事業者やお問い合わせ先のメールサービスでは、各事業者の方針に従って通信情報が処理される場合があります。
+        </p>
+        <h3>データの削除とバックアップ</h3>
+        <p>
+          体重記録はアプリの編集画面から削除できます。アプリを削除すると端末内のデータも削除されます。端末の設定によってはOSのバックアップに含まれる場合があります。
+        </p>
+        <h3>お問い合わせ</h3>
+        <p>
+          メールでお送りいただいた情報は、お問い合わせへの対応に利用します。ご質問や削除のご相談は<a
+            href="mailto:slaboratory.info@gmail.com"
+            >slaboratory.info@gmail.com</a
+          >までご連絡ください。
+        </p>
+        <h3>変更</h3>
+        <p>機能やデータの取り扱いを変更する際は、このページを更新します。</p>
+      </section>
+      <footer>
+        <span>© 2026 S Laboratory</span><span>筋トレ体重記録 · BODYLOG</span>
+      </footer>
+    </main>
+  </body>
+</html>
