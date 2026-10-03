@@ -200,29 +200,44 @@ export default function Settings() {
             </Pressable>
           ) : null}
         </View>
-        <Pressable
-          accessibilityRole="link"
-          onPress={() =>
-            void open(
-              `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(APP_NAME + " お問い合わせ")}`,
-            )
-          }
-          style={styles.card}
-        >
-          <View style={styles.row}>
-            <Text style={{ fontSize: 16, color: colors.ink }}>
-              お問い合わせ
+        <View style={styles.card}>
+          <Text style={{ fontSize: 16, fontWeight: "600", color: colors.ink }}>
+            お問い合わせ・サポート
+          </Text>
+          <Text style={[styles.text, { marginTop: 10 }]}>
+            不具合・ご質問・ご要望はメールでお知らせください。
+          </Text>
+          <Pressable
+            accessibilityRole="link"
+            onPress={() =>
+              void open(
+                `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(APP_NAME + " お問い合わせ")}`,
+              )
+            }
+            style={styles.row}
+          >
+            <Text style={{ fontSize: 14, color: colors.ink, marginTop: 14 }}>
+              {SUPPORT_EMAIL}
             </Text>
             <Ionicons
               name="arrow-up-right-box-outline"
-              size={20}
+              size={18}
               color={colors.accent}
+              style={{ marginTop: 14 }}
             />
-          </View>
-          <Text style={[styles.text, { fontSize: 12, marginTop: 8 }]}>
-            {SUPPORT_EMAIL}
-          </Text>
-        </Pressable>
+          </Pressable>
+          {SITE_URL ? (
+            <Pressable
+              accessibilityRole="link"
+              onPress={() => void open(`${SITE_URL}#support`)}
+              style={{ paddingTop: 12 }}
+            >
+              <Text style={{ color: colors.accent }}>
+                Webのサポートページ ↗
+              </Text>
+            </Pressable>
+          ) : null}
+        </View>
         <Text
           style={{ textAlign: "center", color: colors.muted, fontSize: 12 }}
         >
