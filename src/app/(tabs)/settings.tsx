@@ -5,6 +5,7 @@ import {
   Pressable,
   ScrollView,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -12,10 +13,118 @@ import { Ionicons } from "@expo/vector-icons";
 import { colors, styles } from "../../components/ui";
 import { useWeights } from "../../features/weight/WeightProvider";
 import { APP_NAME, SITE_URL, SUPPORT_EMAIL } from "../../constants/config";
-import { parseWeightCsv } from "../../features/weight/model";
+import {
+  displayWeight,
+  parseWeight,
+  parseWeightCsv,
+  type Unit,
+} from "../../features/weight/model";
 import { exportWeightsCsv, pickWeightCsvText } from "../../services/backup";
+function GoalWeightCard({
+  unit,
+  goalWeightKg,
+  setGoalWeight,
+}: {
+  unit: Unit;
+  goalWeightKg: number | null;
+  setGoalWeight: (kg: number | null) => Promise<void>;
+}) {
+  const [goalInput, setGoalInput] = useState(
+    goalWeightKg != null ? displayWeight(goalWeightKg, unit).toFixed(1) : "",
+  );
+  async function handleSaveGoal() {
+    const kg = parseWeight(goalInput, unit);
+    if (kg === null) {
+      Alert.alert(
+        "保存できませんでした",
+        "20〜350kg相当の体重を入力してください。",
+      );
+      return;
+    }
+    try {
+      await setGoalWeight(kg);
+    } catch {
+      Alert.alert("保存できませんでした", "もう一度お試しください。");
+    }
+  }
+  async function handleClearGoal() {
+    try {
+      await setGoalWeight(null);
+      setGoalInput("");
+    } catch {
+      Alert.alert("クリアできませんでした", "もう一度お試しください。");
+    }
+  }
+  return (
+    <View style={styles.card}>
+      <Text style={{ fontWeight: "600", color: colors.ink, fontSize: 16 }}>
+        目標体重
+      </Text>
+      <View
+        style={{
+          flexDirection: "row",
+          gap: 12,
+          marginTop: 18,
+          alignItems: "center",
+        }}
+      >
+        <TextInput
+          value={goalInput}
+          onChangeText={setGoalInput}
+          keyboardType="decimal-pad"
+          placeholder={`未設定 (${unit})`}
+          placeholderTextColor={colors.muted}
+          style={{
+            flex: 1,
+            backgroundColor: colors.bg,
+            borderRadius: 12,
+            paddingVertical: 14,
+            paddingHorizontal: 16,
+            fontSize: 17,
+            color: colors.ink,
+          }}
+        />
+        <Text style={{ fontSize: 15, color: colors.muted }}>{unit}</Text>
+      </View>
+      <View style={{ flexDirection: "row", gap: 12, marginTop: 14 }}>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => void handleSaveGoal()}
+          style={{
+            flex: 1,
+            padding: 14,
+            borderRadius: 12,
+            alignItems: "center",
+            backgroundColor: colors.accent,
+          }}
+        >
+          <Text style={{ fontWeight: "600", color: colors.onAccent }}>
+            保存
+          </Text>
+        </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => void handleClearGoal()}
+          style={{
+            flex: 1,
+            padding: 14,
+            borderRadius: 12,
+            alignItems: "center",
+            backgroundColor: colors.bg,
+          }}
+        >
+          <Text style={{ fontWeight: "600", color: colors.ink }}>クリア</Text>
+        </Pressable>
+      </View>
+      <Text style={[styles.text, { fontSize: 12, marginTop: 12 }]}>
+        設定するとグラフに目標ラインが表示されます。
+      </Text>
+    </View>
+  );
+}
 export default function Settings() {
-  const { unit, changeUnit, entries, importEntries } = useWeights();
+  const { unit, entries, importEntries, goalWeightKg, setGoalWeight } =
+    useWeights();
   const [busy, setBusy] = useState(false);
   async function open(url: string) {
     try {
@@ -71,50 +180,12 @@ export default function Settings() {
     <SafeAreaView style={styles.screen}>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>設定</Text>
-        <View style={styles.card}>
-          <Text style={{ fontWeight: "600", color: colors.ink, fontSize: 16 }}>
-            体重の単位
-          </Text>
-          <View style={{ flexDirection: "row", gap: 12, marginTop: 18 }}>
-            {(["kg", "lb"] as const).map((next) => (
-              <Pressable
-                key={next}
-                accessibilityRole="button"
-                accessibilityState={{ selected: unit === next }}
-                onPress={async () => {
-                  try {
-                    await changeUnit(next);
-                  } catch {
-                    Alert.alert(
-                      "変更できませんでした",
-                      "もう一度お試しください。",
-                    );
-                  }
-                }}
-                style={{
-                  flex: 1,
-                  padding: 16,
-                  borderRadius: 12,
-                  alignItems: "center",
-                  backgroundColor: unit === next ? colors.accent : colors.bg,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 17,
-                    fontWeight: "600",
-                    color: unit === next ? colors.onAccent : colors.muted,
-                  }}
-                >
-                  {next}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-          <Text style={[styles.text, { fontSize: 12, marginTop: 12 }]}>
-            記録済みの体重も選んだ単位で表示します。
-          </Text>
-        </View>
+        <GoalWeightCard
+          key={goalWeightKg ?? "none"}
+          unit={unit}
+          goalWeightKg={goalWeightKg}
+          setGoalWeight={setGoalWeight}
+        />
         <View style={styles.card}>
           <Text style={{ fontSize: 16, fontWeight: "600", color: colors.ink }}>
             データのバックアップ

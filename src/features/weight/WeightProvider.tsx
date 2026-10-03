@@ -12,12 +12,14 @@ import * as StoreReview from "expo-store-review";
 type State = {
   entries: WeightEntry[];
   unit: Unit;
+  goalWeightKg: number | null;
   ready: boolean;
   error: string | null;
   reload: () => Promise<void>;
   save: (date: string, kg: number) => Promise<void>;
   remove: (date: string) => Promise<void>;
   changeUnit: (unit: Unit) => Promise<void>;
+  setGoalWeight: (kg: number | null) => Promise<void>;
   importEntries: (
     entries: { date: string; weightKg: number }[],
   ) => Promise<void>;
@@ -26,17 +28,20 @@ const Context = createContext<State | null>(null);
 export function WeightProvider({ children }: { children: ReactNode }) {
   const [entries, setEntries] = useState<WeightEntry[]>([]);
   const [unit, setUnit] = useState<Unit>("kg");
+  const [goalWeightKg, setGoalWeightKg] = useState<number | null>(null);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const reload = useCallback(async () => {
     try {
-      const [rows, savedUnit] = await Promise.all([
+      const [rows, savedUnit, savedGoal] = await Promise.all([
         db.listWeights(),
         db.getSetting("unit"),
+        db.getSetting("goalWeightKg"),
       ]);
       setError(null);
       setEntries(rows);
       setUnit(savedUnit === "lb" ? "lb" : "kg");
+      setGoalWeightKg(savedGoal ? Number(savedGoal) : null);
       setReady(true);
     } catch {
       setError("記録を読み込めませんでした。もう一度お試しください。");
@@ -73,6 +78,10 @@ export function WeightProvider({ children }: { children: ReactNode }) {
     await db.setSetting("unit", next);
     setUnit(next);
   }
+  async function setGoalWeight(kg: number | null) {
+    await db.setSetting("goalWeightKg", kg === null ? "" : String(kg));
+    setGoalWeightKg(kg);
+  }
   async function importEntries(imported: { date: string; weightKg: number }[]) {
     for (const entry of imported) {
       await db.saveWeight(entry.date, entry.weightKg);
@@ -84,12 +93,14 @@ export function WeightProvider({ children }: { children: ReactNode }) {
       value={{
         entries,
         unit,
+        goalWeightKg,
         ready,
         error,
         reload,
         save,
         remove,
         changeUnit,
+        setGoalWeight,
         importEntries,
       }}
     >
