@@ -18,6 +18,9 @@ type State = {
   save: (date: string, kg: number) => Promise<void>;
   remove: (date: string) => Promise<void>;
   changeUnit: (unit: Unit) => Promise<void>;
+  importEntries: (
+    entries: { date: string; weightKg: number }[],
+  ) => Promise<void>;
 };
 const Context = createContext<State | null>(null);
 export function WeightProvider({ children }: { children: ReactNode }) {
@@ -70,6 +73,12 @@ export function WeightProvider({ children }: { children: ReactNode }) {
     await db.setSetting("unit", next);
     setUnit(next);
   }
+  async function importEntries(imported: { date: string; weightKg: number }[]) {
+    for (const entry of imported) {
+      await db.saveWeight(entry.date, entry.weightKg);
+    }
+    setEntries(await db.listWeights());
+  }
   return (
     <Context.Provider
       value={{
@@ -81,6 +90,7 @@ export function WeightProvider({ children }: { children: ReactNode }) {
         save,
         remove,
         changeUnit,
+        importEntries,
       }}
     >
       {children}

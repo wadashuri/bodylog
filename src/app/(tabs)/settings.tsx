@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Alert,
   Linking,
@@ -11,8 +12,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { colors, styles } from "../../components/ui";
 import { useWeights } from "../../features/weight/WeightProvider";
 import { APP_NAME, SITE_URL, SUPPORT_EMAIL } from "../../constants/config";
+import { parseWeightCsv } from "../../features/weight/model";
+import { exportWeightsCsv, pickWeightCsvText } from "../../services/backup";
 export default function Settings() {
-  const { unit, changeUnit } = useWeights();
+  const { unit, changeUnit, entries, importEntries } = useWeights();
+  const [busy, setBusy] = useState(false);
   async function open(url: string) {
     try {
       await Linking.openURL(url);
@@ -21,6 +25,46 @@ export default function Settings() {
         "開けませんでした",
         "ブラウザまたはメールアプリの設定をご確認ください。",
       );
+    }
+  }
+  async function handleExport() {
+    if (entries.length === 0) {
+      Alert.alert("記録がありません", "書き出せる体重データがありません。");
+      return;
+    }
+    setBusy(true);
+    try {
+      await exportWeightsCsv(entries);
+    } catch {
+      Alert.alert("書き出せませんでした", "もう一度お試しください。");
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function handleImport() {
+    setBusy(true);
+    try {
+      const text = await pickWeightCsvText();
+      if (text === null) return;
+      const { entries: parsed, skipped } = parseWeightCsv(text);
+      if (parsed.length === 0) {
+        Alert.alert(
+          "取り込めませんでした",
+          "日時と体重の列があるCSVファイルを選んでください。",
+        );
+        return;
+      }
+      await importEntries(parsed);
+      Alert.alert(
+        "取り込み完了",
+        `${parsed.length}件を取り込みました。${
+          skipped > 0 ? `\n${skipped}件は読み取れず除外しました。` : ""
+        }`,
+      );
+    } catch {
+      Alert.alert("取り込めませんでした", "もう一度お試しください。");
+    } finally {
+      setBusy(false);
     }
   }
   return (
@@ -70,6 +114,58 @@ export default function Settings() {
           <Text style={[styles.text, { fontSize: 12, marginTop: 12 }]}>
             記録済みの体重も選んだ単位で表示します。
           </Text>
+        </View>
+        <View style={styles.card}>
+          <Text style={{ fontSize: 16, fontWeight: "600", color: colors.ink }}>
+            データのバックアップ
+          </Text>
+          <Text style={[styles.text, { marginTop: 10 }]}>
+            CSVファイルで書き出し・取り込みができます。CSV書き出しに対応した他の体重記録アプリからの移行にも使えます。
+          </Text>
+          <View style={{ flexDirection: "row", gap: 12, marginTop: 16 }}>
+            <Pressable
+              accessibilityRole="button"
+              disabled={busy}
+              onPress={() => void handleExport()}
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                gap: 8,
+                alignItems: "center",
+                justifyContent: "center",
+                paddingVertical: 14,
+                borderRadius: 12,
+                backgroundColor: colors.bg,
+                opacity: busy ? 0.5 : 1,
+              }}
+            >
+              <Ionicons name="share-outline" size={18} color={colors.ink} />
+              <Text style={{ fontWeight: "600", color: colors.ink }}>
+                書き出す
+              </Text>
+            </Pressable>
+            <Pressable
+              accessibilityRole="button"
+              disabled={busy}
+              onPress={() => void handleImport()}
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                gap: 8,
+                alignItems: "center",
+                justifyContent: "center",
+                paddingVertical: 14,
+                borderRadius: 12,
+                backgroundColor: colors.bg,
+                opacity: busy ? 0.5 : 1,
+              }}
+            >
+              <Ionicons name="download-outline" size={18} color={colors.ink} />
+              <Text style={{ fontWeight: "600", color: colors.ink }}>
+                取り込む
+              </Text>
+            </Pressable>
+          </View>
         </View>
         <View style={styles.card}>
           <Text style={{ fontSize: 16, fontWeight: "600", color: colors.ink }}>

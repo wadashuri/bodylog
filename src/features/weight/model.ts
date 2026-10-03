@@ -60,3 +60,93 @@ export function prettyDate(date: string): string {
     weekday: "short",
   });
 }
+export function toWeightCsv(entries: WeightEntry[]): string {
+  const rows = entries.map((e) => `${e.date},${e.weightKg.toFixed(1)}`);
+  return ["日付,体重 [kg]", ...rows].join("\n");
+}
+function splitCsvLine(line: string): string[] {
+  const out: string[] = [];
+  let field = "";
+  let quoted = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (quoted) {
+      if (ch === '"') {
+        if (line[i + 1] === '"') {
+          field += '"';
+          i++;
+        } else {
+          quoted = false;
+        }
+      } else {
+        field += ch;
+      }
+    } else if (ch === '"') {
+      quoted = true;
+    } else if (ch === ",") {
+      out.push(field);
+      field = "";
+    } else {
+      field += ch;
+    }
+  }
+  out.push(field);
+  return out;
+}
+function parseCsvDate(raw: string): string | null {
+  const value = raw.trim();
+  const match =
+    value.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/) ??
+    value.match(/^(\d{4})(\d{2})(\d{2})$/);
+  if (!match) return null;
+  const y = Number(match[1]);
+  const m = Number(match[2]);
+  const d = Number(match[3]);
+  const check = new Date(y, m - 1, d);
+  if (
+    check.getFullYear() !== y ||
+    check.getMonth() !== m - 1 ||
+    check.getDate() !== d
+  )
+    return null;
+  return `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+}
+export type CsvImportResult = {
+  entries: { date: string; weightKg: number }[];
+  skipped: number;
+};
+// 他アプリ(シンプルダイエット・プロ生ちゃん体重管理など)のCSV書き出しを
+// ヘッダー名から探して読み込めるよう、列順を固定しない。
+export function parseWeightCsv(text: string): CsvImportResult {
+  const lines = text
+    .split(/\r\n|\r|\n/)
+    .filter((line) => line.trim().length > 0);
+  if (lines.length < 2) return { entries: [], skipped: 0 };
+  const header = splitCsvLine(lines[0]);
+  const dateCol = header.findIndex((h) => /日時|日付|date/i.test(h));
+  const weightCol = header.findIndex((h) => /体重|weight/i.test(h));
+  if (dateCol === -1 || weightCol === -1)
+    return { entries: [], skipped: lines.length - 1 };
+  const byDate = new Map<string, number>();
+  let skipped = 0;
+  for (const line of lines.slice(1)) {
+    const cols = splitCsvLine(line);
+    const date = parseCsvDate(cols[dateCol] ?? "");
+    const weightKg = Number((cols[weightCol] ?? "").trim());
+    if (
+      !date ||
+      !Number.isFinite(weightKg) ||
+      weightKg < 20 ||
+      weightKg > 350
+    ) {
+      skipped++;
+      continue;
+    }
+    byDate.set(date, Math.round(weightKg * 10) / 10);
+  }
+  const entries = Array.from(byDate, ([date, weightKg]) => ({
+    date,
+    weightKg,
+  })).sort((a, b) => a.date.localeCompare(b.date));
+  return { entries, skipped };
+}
