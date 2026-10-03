@@ -63,6 +63,19 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="compare"
+        options={{
+          title: "比較",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons
+              name="swap-horizontal-outline"
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="settings"
         options={{
           title: "設定",
